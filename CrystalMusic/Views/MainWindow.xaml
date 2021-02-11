@@ -7,6 +7,12 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <Grid>
-        
-    </Grid>
+		<Button x:Name="PlayButton"
+                Content="Play"
+                VerticalAlignment="Center"
+                Margin="0,125,0,0"
+                Command="{Binding PlayCommand}"
+                HorizontalAlignment="Center"
+                Width="75"/>
+	</Grid>
 </Window>
