@@ -22,9 +22,12 @@ namespace CrystalMusic.Views
 	/// </summary>
 	public partial class MainWindow : Window
 	{
+		ViewModels.MainViewModel ViewModel = new ViewModels.MainViewModel();
 		public MainWindow()
 		{
 			InitializeComponent();
+			this.ViewModel.Initialize(this);
+			this.DataContext = this.ViewModel;
 		}
 	}
 }
