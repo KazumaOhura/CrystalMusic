@@ -7,12 +7,20 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <Grid>
-		<Button x:Name="PlayButton"
+    <Button x:Name="PlayButton"
                 Content="Play"
                 VerticalAlignment="Center"
                 Margin="0,125,0,0"
                 Command="{Binding PlayCommand}"
                 HorizontalAlignment="Center"
                 Width="75"/>
+		<Button x:Name="StopButton"
+                Content="Stop"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Margin="0,125,0,0"
+                Width="75"
+                Visibility="Hidden"
+                Command="{Binding StopCommand}"/>
 	</Grid>
 </Window>
