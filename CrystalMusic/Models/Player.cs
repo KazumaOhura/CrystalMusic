@@ -30,6 +30,27 @@ namespace CrystalMusic.Models
 				this.OutputDevice.PlaybackStopped += OnPlaybackStopped;
 			}
 		}
+		public void Play()
+		{
+			try
+			{
+				if (this.CanPlay())
+				{
+					this.OutputDevice.Init(this.AudioFileReader);
+					this.OutputDevice.Play();
+				}
+			}
+			catch (Exception e)
+			{
+				DebugConsole.WriteLine("Play():" + e.Message);
+				throw;
+			}
+		}
+		public bool CanPlay()
+		{
+			if (this.OutputDevice.PlaybackState != PlaybackState.Playing && this.AudioFileReader != null) return true;
+			else return false;
+		}
 		public void OnPlaybackStopped(object sender, EventArgs args)
 		{
 			
