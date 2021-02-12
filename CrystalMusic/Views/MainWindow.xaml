@@ -22,5 +22,12 @@
                 Width="75"
                 Visibility="Hidden"
                 Command="{Binding StopCommand}"/>
+		<Button x:Name="RewindButton"
+                Content="Rewind"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Margin="0,200,0,0"
+                Width="75"
+                Command="{Binding RewindCommand}"/>
 	</Grid>
 </Window>
