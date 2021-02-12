@@ -7,7 +7,7 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <Grid>
-    <Button x:Name="PlayButton"
+        <Button x:Name="PlayButton"
                 Content="Play"
                 VerticalAlignment="Center"
                 Margin="0,125,0,0"
@@ -29,6 +29,13 @@
                 Margin="0,200,0,0"
                 Width="75"
                 Command="{Binding RewindCommand}"/>
+		<Button x:Name="SelectFileButton"
+                Content="Select AudioFile"
+                VerticalAlignment="Top"
+                HorizontalAlignment="Left"
+                Margin="25,25,0,0"
+                Width="125"
+                Command="{Binding SelectFileCommand}"/>
 		<Slider x:Name="soundVolume"
                 HorizontalAlignment="Right"
                 VerticalAlignment="Bottom"
