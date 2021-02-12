@@ -16,6 +16,8 @@ namespace CrystalMusic.Models
 		public AudioFileReader AudioFileReader { get => this.audioFileReader; set => this.audioFileReader = value; }
 		private WaveOutEvent outputDevice;
 		public WaveOutEvent OutputDevice { get => this.outputDevice; set => this.outputDevice = value; }
+		private string playFileName = null;
+		public string PlayFileName { get => this.playFileName; set => this.playFileName = value; }
 		private float soundVolume = 0.5f;
 		public float SoundVolume
 		{
@@ -90,6 +92,19 @@ namespace CrystalMusic.Models
 			catch (NullReferenceException)
 			{
 				DebugConsole.WriteLine("Please select the audio file.");
+			}
+		}
+		public void CreateFileReader()
+		{
+			try
+			{
+				if (this.AudioFileReader == null && this.PlayFileName != null) this.AudioFileReader = new AudioFileReader(this.PlayFileName);
+				this.SoundVolume = this.SoundVolume;
+			}
+			catch (Exception e)
+			{
+				DebugConsole.WriteLine("CreateFileReader():" + e.Message);
+				throw;
 			}
 		}
 		public void OnPlaybackStopped(object sender, EventArgs args)
