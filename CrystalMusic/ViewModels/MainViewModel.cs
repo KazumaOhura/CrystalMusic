@@ -14,7 +14,16 @@ namespace CrystalMusic.ViewModels
 	{
 		public Views.MainWindow View { get; private set; } = null;
 		private Models.Player Player { get; set; }
-
+		private float soundVolume = 50f;
+		public int SoundVolume
+		{
+			get => (int)this.soundVolume;
+			set
+			{
+				this.Set(ref this.soundVolume, value);
+				this.Player.SoundVolume = this.soundVolume / 100f;
+			}
+		}
 		private Helpers.RelayCommand playCommand;
 		public Helpers.RelayCommand PlayCommand { get => playCommand = playCommand ?? new Helpers.RelayCommand(OnPlayButtonClicked, Player.CanPlay); }
 		private Helpers.RelayCommand stopCommand;
