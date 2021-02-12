@@ -68,6 +68,17 @@ namespace CrystalMusic.Models
 			if (this.OutputDevice.PlaybackState == PlaybackState.Playing) return true;
 			return false;
 		}
+		public void Rewind()
+		{
+			try
+			{
+				this.AudioFileReader.Position = 0;
+			}
+			catch (NullReferenceException)
+			{
+				DebugConsole.WriteLine("Please select the audio file.");
+			}
+		}
 		public void OnPlaybackStopped(object sender, EventArgs args)
 		{
 			
