@@ -16,6 +16,19 @@ namespace CrystalMusic.Models
 		public AudioFileReader AudioFileReader { get => this.audioFileReader; set => this.audioFileReader = value; }
 		private WaveOutEvent outputDevice;
 		public WaveOutEvent OutputDevice { get => this.outputDevice; set => this.outputDevice = value; }
+		private float soundVolume = 0.5f;
+		public float SoundVolume
+		{
+			get
+			{
+				return this.soundVolume;
+			}
+			set
+			{
+				if (this.AudioFileReader != null) this.AudioFileReader.Volume = soundVolume;
+				this.soundVolume = value;
+			}
+		}
 
 		private bool isClosing = false;
 		private bool disposedValue;
