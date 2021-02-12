@@ -29,5 +29,27 @@
                 Margin="0,200,0,0"
                 Width="75"
                 Command="{Binding RewindCommand}"/>
+		<Slider x:Name="soundVolume"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Bottom"
+                Width="150"
+                Minimum="0"
+                Maximum="100"
+                Value="{Binding SoundVolume}"
+                Margin="0,0,25,10"/>
+		<TextBlock HorizontalAlignment="Right"
+                   Margin="0,325,150,0"
+                   TextWrapping="Wrap"
+                   Text="{Binding SoundVolume}"
+                   VerticalAlignment="Center"
+                   TextAlignment="Center"
+                   Width="25"/>
+		<TextBlock HorizontalAlignment="Right"
+                   Margin="0,290,150,0"
+                   TextWrapping="Wrap"
+                   Text="音量"
+                   VerticalAlignment="Center"
+                   TextAlignment="Center"
+                   Width="25"/>
 	</Grid>
 </Window>
