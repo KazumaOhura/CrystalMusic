@@ -34,8 +34,8 @@ namespace CrystalMusic.ViewModels
 			#if DEBUG
 			//DebugConsole.WriteLine("Player.CanPlay():" + this.Player.CanPlay().ToString());
 			DebugConsole.WriteLine("Player.CanStop():" + this.Player.CanStop().ToString());
-      #endif
-     }
+			#endif
+		}
 
 		private void OnPlayButtonClicked()
 		{
