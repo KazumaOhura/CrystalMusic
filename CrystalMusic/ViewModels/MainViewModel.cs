@@ -37,6 +37,7 @@ namespace CrystalMusic.ViewModels
 		public void Initialize(Views.MainWindow mainWindow)
 		{
 			this.View = mainWindow;
+			this.Player = new Models.Player();
 		}
 		private void SelectFile()
 		{
