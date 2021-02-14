@@ -25,6 +25,8 @@ namespace CrystalMusic.ViewModels
 				this.Player.SoundVolume = this.soundVolume / 100f;
 			}
 		}
+		public Dictionary<int, string> Devices { get; private set; }
+
 		private Helpers.RelayCommand playCommand;
 		public Helpers.RelayCommand PlayCommand { get => playCommand = playCommand ?? new Helpers.RelayCommand(OnPlayButtonClicked, Player.CanPlay); }
 		private Helpers.RelayCommand stopCommand;
@@ -33,11 +35,11 @@ namespace CrystalMusic.ViewModels
 		public Helpers.RelayCommand RewindCommand { get => rewindCommand = rewindCommand ?? new Helpers.RelayCommand(OnRewindButtonClicked); }
 		private Helpers.RelayCommand selectFileCommand;
 		public Helpers.RelayCommand SelectFileCommand { get => selectFileCommand = selectFileCommand ?? new Helpers.RelayCommand(SelectFile); }
-
 		public void Initialize(Views.MainWindow mainWindow)
 		{
 			this.View = mainWindow;
 			this.Player = new Models.Player();
+			this.Devices = Player.GetDevices();
 		}
 		private void SelectFile()
 		{

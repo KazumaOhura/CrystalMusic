@@ -107,6 +107,27 @@ namespace CrystalMusic.Models
 				throw;
 			}
 		}
+		public Dictionary<int, string> GetDevices()
+		{
+			Dictionary<int, string> keyValues = new Dictionary<int, string>();
+			for(int i = -1; i < WaveOut.DeviceCount; i++)
+			{
+				var caps = WaveOut.GetCapabilities(i);
+				if (i == -1) keyValues.Add(i, "Default Device");
+				else { keyValues.Add(i, caps.ProductName); }
+			}
+			return keyValues;
+		}
+		public void SetDevice(int num)
+		{
+			try
+			{
+				if (num < -1 || WaveOut.DeviceCount < num) throw new ArgumentOutOfRangeException("Invalid value","無効な値が指定されました");
+				this.OutputDevice.DeviceNumber = num;
+			}catch(ArgumentOutOfRangeException e){
+				DebugConsole.WriteLine("SetDevice():" + e.ParamName);
+			}
+		}
 		public void OnPlaybackStopped(object sender, EventArgs args)
 		{
 			

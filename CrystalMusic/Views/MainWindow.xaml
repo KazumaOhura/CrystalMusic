@@ -44,6 +44,15 @@
                 Maximum="100"
                 Value="{Binding SoundVolume}"
                 Margin="0,0,25,10"/>
+		<ComboBox x:Name="Devices"
+                    HorizontalAlignment="Left"
+                    Margin="25,75,0,0"
+                    VerticalAlignment="Top"
+                    Width="250"
+                    ItemsSource="{Binding Devices}"
+                    SelectedValuePath="Key"
+                    DisplayMemberPath="Value"
+                    SelectedIndex="0"/>
 		<TextBlock HorizontalAlignment="Right"
                    Margin="0,325,150,0"
                    TextWrapping="Wrap"
