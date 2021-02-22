@@ -39,6 +39,7 @@ namespace CrystalMusic.ViewModels
 		{
 			this.View = mainWindow;
 			this.View.Closed += this.OnClosed;
+			this.View.Devices.DropDownClosed += OnSelectedDevice;
 			this.Player = new Models.Player();
 			this.Devices = Player.GetDevices();
 		}
@@ -82,6 +83,16 @@ namespace CrystalMusic.ViewModels
 		private void OnRewindButtonClicked()
 		{
 			this.Player.Rewind();
+		}
+		private void OnSelectedDevice(object sender, EventArgs e)
+		{
+			KeyValuePair<int, string> item = (KeyValuePair<int, string>)this.View.Devices.SelectedItem;
+			this.Player.SetDevice(item.Key);
+			if(this.Player.OutputDevice.PlaybackState == NAudio.Wave.PlaybackState.Playing)
+			{
+				this.StopCommand.Execute(null);
+				this.PlayCommand.Execute(null);
+			}
 		}
 		private void OnClosed(object sender, EventArgs e)
 		{
