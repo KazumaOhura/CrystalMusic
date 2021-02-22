@@ -38,6 +38,7 @@ namespace CrystalMusic.ViewModels
 		public void Initialize(Views.MainWindow mainWindow)
 		{
 			this.View = mainWindow;
+			this.View.Closed += this.OnClosed;
 			this.Player = new Models.Player();
 			this.Devices = Player.GetDevices();
 		}
@@ -81,6 +82,10 @@ namespace CrystalMusic.ViewModels
 		private void OnRewindButtonClicked()
 		{
 			this.Player.Rewind();
+		}
+		private void OnClosed(object sender, EventArgs e)
+		{
+			this.Player.Dispose();
 		}
 	}
 }
