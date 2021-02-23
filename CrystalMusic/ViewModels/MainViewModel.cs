@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using MSAPI = Microsoft.WindowsAPICodePack;
+
 #if DEBUG
 using Debug;
 #endif
@@ -13,7 +15,8 @@ namespace CrystalMusic.ViewModels
 	public class MainViewModel : Helpers.Observable
 	{
 		public Views.MainWindow View { get; private set; } = null;
-		private Models.Player Player { get; set; }
+		private Models.Player _player;
+		public Models.Player Player { get => this._player; set => Set(ref this._player, value); }
 		public string FileName { private get => Player.PlayFileName; set => Player.PlayFileName = value; }
 		private float soundVolume = 50f;
 		public int SoundVolume
@@ -33,6 +36,8 @@ namespace CrystalMusic.ViewModels
 		public Helpers.RelayCommand StopCommand { get => stopCommand = stopCommand ?? new Helpers.RelayCommand(OnStopButtonClicked, Player.CanStop); }
 		private Helpers.RelayCommand rewindCommand;
 		public Helpers.RelayCommand RewindCommand { get => rewindCommand = rewindCommand ?? new Helpers.RelayCommand(OnRewindButtonClicked); }
+		private Helpers.RelayCommand selectFolderCommand;
+		public Helpers.RelayCommand SelectFolderCommand { get => selectFolderCommand = selectFolderCommand ?? new Helpers.RelayCommand(SelectFolder); }
 		private Helpers.RelayCommand selectFileCommand;
 		public Helpers.RelayCommand SelectFileCommand { get => selectFileCommand = selectFileCommand ?? new Helpers.RelayCommand(SelectFile); }
 		public void Initialize(Views.MainWindow mainWindow)
@@ -50,11 +55,24 @@ namespace CrystalMusic.ViewModels
 				Filter = "MP3(*.mp3)|*.mp3",
 				Multiselect = true
 			};
-
 			if (dialog.ShowDialog() == true)
 			{
 				this.FileName = dialog.FileName;
 				this.Player.CreateFileReader();
+			}
+			this.PlayCommand.OnCanExecuteChanged();
+		}
+		private void SelectFolder()
+		{
+			var dialog = new MSAPI::Dialogs.CommonOpenFileDialog
+			{
+				IsFolderPicker = true,
+				Title = "Select Folder",
+				InitialDirectory = @"C:\\Music"
+			};
+			if (dialog.ShowDialog() == MSAPI::Dialogs.CommonFileDialogResult.Ok)
+			{
+				this.Player.Setting.Folder = dialog.FileName;
 			}
 			this.PlayCommand.OnCanExecuteChanged();
 		}
