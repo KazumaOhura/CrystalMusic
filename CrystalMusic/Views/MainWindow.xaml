@@ -36,6 +36,13 @@
                 Margin="25,25,0,0"
                 Width="125"
                 Command="{Binding SelectFileCommand}"/>
+		<Button x:Name="SelectFolderButton"
+                Content="Select MusicFolder"
+                VerticalAlignment="Top"
+                HorizontalAlignment="Left"
+                Margin="25,50,0,0"
+                Width="125"
+                Command="{Binding SelectFolderCommand}"/>
 		<Slider x:Name="soundVolume"
                 HorizontalAlignment="Right"
                 VerticalAlignment="Bottom"

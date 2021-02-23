@@ -10,7 +10,7 @@ using Debug;
 
 namespace CrystalMusic.Models
 {
-	public class Player : IDisposable
+	public class Player : Helpers.Observable, IDisposable
 	{
 		private AudioFileReader audioFileReader;
 		public AudioFileReader AudioFileReader { get => this.audioFileReader; set => this.audioFileReader = value; }
@@ -31,12 +31,11 @@ namespace CrystalMusic.Models
 				this.soundVolume = value;
 			}
 		}
-
+		private Setting setting;
+		public Setting Setting { get => this.setting; set => Set(ref this.setting, value); }
 		private bool isClosing = false;
 		private bool disposedValue;
-
 		public bool IsClosing { get => this.isClosing; set => this.isClosing = value; }
-
 		public Player()
 		{
 			if (this.OutputDevice == null)
@@ -44,7 +43,8 @@ namespace CrystalMusic.Models
 				this.OutputDevice = new WaveOutEvent();
 				this.OutputDevice.PlaybackStopped += OnPlaybackStopped;
 			}
-		}		
+			this.Setting = Config.Read();
+		}
 		public void Play()
 		{
 			try
@@ -135,6 +135,7 @@ namespace CrystalMusic.Models
 
 		private void Destroy()
 		{
+			Config.Save(this.Setting);
 			this.audioFileReader?.Dispose();
 			this.OutputDevice?.Dispose();
 		}
