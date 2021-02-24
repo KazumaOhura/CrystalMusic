@@ -4,7 +4,8 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Xml.Serialization;
+using System.Runtime.Serialization;
+using System.Xml;
 
 using Debug;
 
@@ -23,10 +24,14 @@ namespace CrystalMusic.Models
 			try
 			{
 				if (!System.IO.Directory.Exists(_dirName)) System.IO.Directory.CreateDirectory(_dirName);
-				System.Xml.Serialization.XmlSerializer serializer = new System.Xml.Serialization.XmlSerializer(typeof(Setting));
-				System.IO.StreamWriter streamWriter = new System.IO.StreamWriter(_fileName, false, new UTF8Encoding(false));
-				serializer.Serialize(streamWriter, setting);
-				streamWriter.Close();
+				DataContractSerializer serializer = new DataContractSerializer(typeof(Setting));
+				XmlWriterSettings xmlSettings = new XmlWriterSettings
+				{
+					Encoding = new UTF8Encoding(false)
+				};
+				XmlWriter xmlWariter = XmlWriter.Create(_fileName, xmlSettings);
+				serializer.WriteObject(xmlWariter, setting);
+				xmlWariter.Close();
 			}
 			catch (Exception e)
 			{
@@ -42,12 +47,12 @@ namespace CrystalMusic.Models
 		{
 			try
 			{
-				if (System.IO.Directory.Exists(_dirName))
+				if (Directory.Exists(_dirName) && File.Exists(_fileName))
 				{
-					System.Xml.Serialization.XmlSerializer serializer = new System.Xml.Serialization.XmlSerializer(typeof(Setting));
-					System.IO.StreamReader streamReader = new System.IO.StreamReader(_fileName, new UTF8Encoding(false));
-					Setting retVal = (Setting)serializer.Deserialize(streamReader);
-					streamReader.Close();
+					DataContractSerializer serializer = new DataContractSerializer(typeof(Setting));
+					XmlReader xmlReader = XmlReader.Create(_fileName);
+					Setting retVal = (Setting)serializer.ReadObject(xmlReader);
+					xmlReader.Close();
 					return retVal;
 				}
 				else return new Setting();
