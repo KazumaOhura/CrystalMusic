@@ -79,7 +79,7 @@ namespace CrystalMusic.ViewModels
 			this.View.Devices.DropDownClosed += OnSelectedDevice;
 			this.View.AudioList.SelectionChanged += OnAudioSelected;
 
-			//this.Setting = Models.Config.Read();
+			this.Setting = Models.Config.Read();
 			this.Setting = new Models.Setting();
 			this.Player = new Models.Player();
 			this.Devices = Player.GetDevices();
@@ -98,7 +98,6 @@ namespace CrystalMusic.ViewModels
 				{
 					AddMusic(str);
 				}
-				//this.Player.CreateFileReader();
 			}
 			this.PlayCommand.OnCanExecuteChanged();
 		}
@@ -168,7 +167,7 @@ namespace CrystalMusic.ViewModels
 		}
 		private void OnClosed(object sender, EventArgs e)
 		{
-			//Models.Config.Save(this.Setting);
+			Models.Config.Save(this.Setting);
 			this.Player.Dispose();
 		}
 	}
