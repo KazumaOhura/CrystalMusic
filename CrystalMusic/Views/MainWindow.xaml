@@ -74,5 +74,12 @@
                    VerticalAlignment="Center"
                    TextAlignment="Center"
                    Width="25"/>
+		<ListBox x:Name="AudioList"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Bottom"
+                    Height="250"
+                    Width="250"
+                    Margin="25,0,0,50"
+                    ItemsSource="{Binding Titles, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
 	</Grid>
 </Window>

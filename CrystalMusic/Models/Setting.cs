@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace CrystalMusic.Models
 {
-	public class Setting
+	public class Setting : Helpers.Observable
 	{
-		private string folder = @"C:\\Music";
-		public string Folder { get => this.folder; set=>this.folder = value; }
-		private List<string> musics = new List<string>();
-		public List<string> Musics { get => this.musics; set=>this.musics = value; }
+		private string _folder = @"C:\Music";
+		public string Folder { get => this._folder; set => Set(ref this._folder, value); }
+		private Dictionary<string, string> _musics = new Dictionary<string, string>();
+		public Dictionary<string, string> Musics { get => this._musics; set => Set(ref this._musics, value); }
 	}
 }
