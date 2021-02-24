@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.IO;
+using System.Drawing;
 
 using NAudio.Wave;
 
 using Debug;
+using System.Windows.Media.Imaging;
 
 namespace CrystalMusic.Models
 {
@@ -16,8 +16,8 @@ namespace CrystalMusic.Models
 		public AudioFileReader AudioFileReader { get => this.audioFileReader; set => this.audioFileReader = value; }
 		private WaveOutEvent outputDevice;
 		public WaveOutEvent OutputDevice { get => this.outputDevice; set => this.outputDevice = value; }
-		private string playFileName = null;
-		public string PlayFileName { get => this.playFileName; set => this.playFileName = value; }
+		private string playFilePath = null;
+		public string PlayFilePath { get => this.playFilePath; set => Set(ref playFilePath, value); }
 		private float soundVolume = 0.5f;
 		public float SoundVolume
 		{
@@ -31,11 +31,10 @@ namespace CrystalMusic.Models
 				this.soundVolume = value;
 			}
 		}
-		private Setting setting;
-		public Setting Setting { get => this.setting; set => Set(ref this.setting, value); }
-		private bool isClosing = false;
 		private bool disposedValue;
-		public bool IsClosing { get => this.isClosing; set => this.isClosing = value; }
+		private TagLib.File audioFile;
+		public TagLib.File AudioFile { get => this.audioFile; set => Set(ref this.audioFile, value); }
+
 		public Player()
 		{
 			if (this.OutputDevice == null)
@@ -43,7 +42,6 @@ namespace CrystalMusic.Models
 				this.OutputDevice = new WaveOutEvent();
 				this.OutputDevice.PlaybackStopped += OnPlaybackStopped;
 			}
-			this.Setting = Config.Read();
 		}
 		public void Play()
 		{
@@ -98,7 +96,8 @@ namespace CrystalMusic.Models
 		{
 			try
 			{
-				if (this.AudioFileReader == null && this.PlayFileName != null) this.AudioFileReader = new AudioFileReader(this.PlayFileName);
+				if (this.AudioFileReader == null && this.PlayFilePath != null) this.AudioFileReader = new AudioFileReader(this.PlayFilePath);
+				GetAudioFile();
 				this.SoundVolume = this.SoundVolume;
 			}
 			catch (Exception e)
@@ -128,6 +127,10 @@ namespace CrystalMusic.Models
 				DebugConsole.WriteLine("SetDevice():" + e.ParamName);
 			}
 		}
+		public void GetAudioFile()
+		{
+			this.AudioFile = TagLib.File.Create(this.PlayFilePath);
+		}
 		public void OnPlaybackStopped(object sender, EventArgs args)
 		{
 			
@@ -135,7 +138,6 @@ namespace CrystalMusic.Models
 
 		private void Destroy()
 		{
-			Config.Save(this.Setting);
 			this.audioFileReader?.Dispose();
 			this.OutputDevice?.Dispose();
 		}

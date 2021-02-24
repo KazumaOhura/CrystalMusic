@@ -5,6 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 
 using MSAPI = Microsoft.WindowsAPICodePack;
+using System.Windows.Media.Imaging;
+using System.IO;
+using System.Collections.ObjectModel;
 
 #if DEBUG
 using Debug;
@@ -17,7 +20,10 @@ namespace CrystalMusic.ViewModels
 		public Views.MainWindow View { get; private set; } = null;
 		private Models.Player _player;
 		public Models.Player Player { get => this._player; set => Set(ref this._player, value); }
-		public string FileName { private get => Player.PlayFileName; set => Player.PlayFileName = value; }
+		private Models.Setting _setting;
+		public Models.Setting Setting { get => this._setting; set => Set(ref this._setting, value); }
+		//TODO: ViewModelとModelが曖昧になっている
+		public string FilePath { private get => Player.PlayFilePath; set => this.Player.PlayFilePath = value; }
 		private float soundVolume = 50f;
 		public int SoundVolume
 		{
@@ -28,7 +34,33 @@ namespace CrystalMusic.ViewModels
 				this.Player.SoundVolume = this.soundVolume / 100f;
 			}
 		}
-		public Dictionary<int, string> Devices { get; private set; }
+		private Dictionary<string, string> _musics = new Dictionary<string, string>();
+		public Dictionary<string, string> Musics { get => this._musics; private set => Set(ref this._musics, value); }
+		private ObservableCollection<string> _titles = new ObservableCollection<string>();
+		public ObservableCollection<string> Titles { get => this._titles; private set => this._titles = value; }
+		private Dictionary<int, string> _devices = new Dictionary<int, string>();
+		public Dictionary<int, string> Devices { get => this._devices; private set => Set(ref this._devices, value); }
+
+		/// <summary>
+		/// MP3
+		/// </summary>
+		static private readonly string MP3 = @"*.mp3;";
+		/// <summary>
+		/// WAVE
+		/// </summary>
+		static private readonly string WAVE = @"*.wav;*.wave;";
+		/// <summary>
+		/// AAC
+		/// </summary>
+		static private readonly string AAC = @"*.m4a;*.aac;*.mp4;";
+		/// <summary>
+		/// FLAC
+		/// </summary>
+		static private readonly string FLAC = @"*.flac;";
+		/// <summary>
+		/// ファイルのダイアログフィルター
+		/// </summary>
+		static private readonly string FILTER = $@"Audio Files|{MP3}{WAVE}{AAC}";
 
 		private Helpers.RelayCommand playCommand;
 		public Helpers.RelayCommand PlayCommand { get => playCommand = playCommand ?? new Helpers.RelayCommand(OnPlayButtonClicked, Player.CanPlay); }
@@ -45,6 +77,10 @@ namespace CrystalMusic.ViewModels
 			this.View = mainWindow;
 			this.View.Closed += this.OnClosed;
 			this.View.Devices.DropDownClosed += OnSelectedDevice;
+			this.View.AudioList.SelectionChanged += OnAudioSelected;
+
+			//this.Setting = Models.Config.Read();
+			this.Setting = new Models.Setting();
 			this.Player = new Models.Player();
 			this.Devices = Player.GetDevices();
 		}
@@ -52,13 +88,17 @@ namespace CrystalMusic.ViewModels
 		{
 			var dialog = new Microsoft.Win32.OpenFileDialog
 			{
-				Filter = "MP3(*.mp3)|*.mp3",
+				InitialDirectory = this.Setting.Folder,
+				Filter = FILTER,
 				Multiselect = true
 			};
 			if (dialog.ShowDialog() == true)
 			{
-				this.FileName = dialog.FileName;
-				this.Player.CreateFileReader();
+				foreach(string str in dialog.FileNames)
+				{
+					AddMusic(str);
+				}
+				//this.Player.CreateFileReader();
 			}
 			this.PlayCommand.OnCanExecuteChanged();
 		}
@@ -68,12 +108,26 @@ namespace CrystalMusic.ViewModels
 			{
 				IsFolderPicker = true,
 				Title = "Select Folder",
-				InitialDirectory = @"C:\\Music"
+				InitialDirectory = @"C:\Music"
 			};
 			if (dialog.ShowDialog() == MSAPI::Dialogs.CommonFileDialogResult.Ok)
 			{
-				this.Player.Setting.Folder = dialog.FileName;
+				this.Setting.Folder = dialog.FileName;
 			}
+			this.PlayCommand.OnCanExecuteChanged();
+		}
+		private void AddMusic(string str)
+		{
+			string title = TagLib.File.Create(str).Tag.Album ?? Path.GetFileName(str);
+			if (!this.Setting.Musics.ContainsKey(title)) this.Setting.Musics.Add(title, str);
+			if(!this.Musics.ContainsKey(title)) this.Musics.Add(Path.GetFileName(str), str);
+			if(!this.Titles.Contains(title)) this.Titles.Add(title);
+		}
+		private void OnAudioSelected(object sender, EventArgs e)
+		{
+			var item = (string)this.View.AudioList.SelectedItem;
+			this.FilePath = this.Musics[item];
+			this.Player.CreateFileReader();
 			this.PlayCommand.OnCanExecuteChanged();
 		}
 		private void OnPlayButtonClicked()
@@ -114,6 +168,7 @@ namespace CrystalMusic.ViewModels
 		}
 		private void OnClosed(object sender, EventArgs e)
 		{
+			//Models.Config.Save(this.Setting);
 			this.Player.Dispose();
 		}
 	}
